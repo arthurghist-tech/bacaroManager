@@ -2296,7 +2296,7 @@ window.handleDeleteGoal = async function(goalId, title) {
 							setTimeout(() => {
 								window.location.href = '/dashboard'; // If using your vercel.json rewrite
 								// OR 
-								window.location.href = '/views/dashboard.html'; // Direct path
+								window.location.href = '/dashboard'; // Use clean path
 							}, 300);
 						} else {
 							messageDiv.innerHTML = data.error || 'An error occurred';

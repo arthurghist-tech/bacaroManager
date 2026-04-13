@@ -2,8 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/", "destination": "/views/guest.html" },
-    { "source": "/dashboard", "destination": "/views/dashboard.html" },
-    { "source": "/reset-password", "destination": "/views/reset-password.html" }
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/reset-password", "destination": "/reset-password.html" }
   ]
 }
