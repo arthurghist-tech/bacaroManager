@@ -1930,8 +1930,15 @@ window.openGoalDetails = function(goalId) {
     statusBadge.innerText = status.label;
     statusBadge.className = 'badge-status ' + (status.class);
 
-    const progress = (goal.current_amount / goal.target_amount * 100).toFixed(1);
+    const rawProgress = (goal.current_amount / goal.target_amount * 100);
+    const progress = Math.min(100, rawProgress).toFixed(1);
     document.getElementById('detail-goal-progress').innerText = progress + '%';
+    
+    // Update Progress Bar if it exists
+    const progressFill = document.getElementById('detail-goal-progress-fill');
+    if (progressFill) {
+        progressFill.style.width = progress + '%';
+    }
     
     const monthly = calculateMonthlyTarget(goal.current_amount, goal.target_amount, goal.deadline);
     document.getElementById('detail-goal-monthly-target').innerText = formatCurrency(monthly);
