@@ -217,6 +217,12 @@
 			document.getElementById('fund-goal-id').value = id;
 			document.getElementById('add-funds-modal').classList.add('active'); 
 		}
+
+		window.openAddFundsModalFromDetail = function() {
+			if (window.currentActiveGoalId) {
+				window.openAddFundsModal(window.currentActiveGoalId);
+			}
+		}
 		function openSettingsPanel(event) {
 			if (event) event.preventDefault();
 			toggleAccountSidebar(false);
@@ -1773,6 +1779,7 @@
 		};
 
 window.goals = [];
+window.currentActiveGoalId = null;
 
 async function loadGoals() {
     if (!isAuthenticated()) return;
@@ -1881,6 +1888,7 @@ function renderGoals() {
 }
 
 window.openGoalDetails = function(goalId) {
+	window.currentActiveGoalId = goalId;
     const goal = (window.goals || []).find(g => g.goal_id === goalId);
     if (!goal) return;
 
@@ -2075,6 +2083,10 @@ window.handleDeleteGoal = async function(goalId, title) {
 						closeAllModals();
 						showToast('Funds added successfully');
 						await loadGoals();
+						// Refresh details if currently viewing the same goal
+						if (window.currentActiveGoalId == goal_id) {
+							window.openGoalDetails(parseInt(goal_id));
+						}
 					} catch (err) {
 						messageDiv.innerHTML = escapeHtml(err.message);
 						messageDiv.className = 'message error';
@@ -2658,7 +2670,11 @@ function initializeCustomSelects() {
 		
 		if (select.value) {
 			const opt = select.options[select.selectedIndex];
-			textSpan.innerText = opt ? dict(opt.text.trim()) : '';
+			if (opt) {
+				const i18nKey = opt.getAttribute('data-i18n');
+				if (i18nKey) textSpan.setAttribute('data-i18n', i18nKey);
+				textSpan.innerText = dict(opt.text.trim());
+			}
 			wrapper.classList.add('has-value');
 			if (!isSettings && !isTx) {
 				const group = select.closest('.input-group');
@@ -2678,12 +2694,16 @@ function initializeCustomSelects() {
 			const optionDiv = document.createElement('div');
 			optionDiv.className = 'custom-option';
 			if (opt.selected) optionDiv.classList.add('selected');
-			const dict = window.getTranslation ? window.getTranslation : (k) => k;
+			const i18nKey = opt.getAttribute('data-i18n');
+			if (i18nKey) optionDiv.setAttribute('data-i18n', i18nKey);
 			optionDiv.innerText = dict(opt.text.trim());
 			
 			optionDiv.addEventListener('click', (e) => {
 				e.stopPropagation();
 				select.value = opt.value;
+				const i18nKey = opt.getAttribute('data-i18n');
+				if (i18nKey) textSpan.setAttribute('data-i18n', i18nKey);
+				else textSpan.removeAttribute('data-i18n');
 				textSpan.innerText = dict(opt.text.trim());
 				wrapper.classList.add('has-value');
 				if (!isSettings && !isTx) {
@@ -2735,7 +2755,12 @@ function initializeCustomSelects() {
 		select.addEventListener('change', () => {
 			if (select.value) {
 				const opt = select.options[select.selectedIndex];
-				textSpan.innerText = opt ? opt.text : '';
+				if (opt) {
+					const i18nKey = opt.getAttribute('data-i18n');
+					if (i18nKey) textSpan.setAttribute('data-i18n', i18nKey);
+					else textSpan.removeAttribute('data-i18n');
+					textSpan.innerText = opt.text;
+				}
 				wrapper.classList.add('has-value');
 				const group = select.closest('.input-group');
 				if (group) group.classList.add('has-value');
@@ -2759,6 +2784,8 @@ function initializeCustomSelects() {
 			}
 		});
 	});
+
+	if (window.applyTranslations) window.applyTranslations();
 }
 
 function updateDashboardStats(transactions) {
