@@ -412,7 +412,6 @@
 							<div class="wallet-detail-header">
 								<div class="detail-header-left">
 									<button class="btn-back" onclick="showView('goals', document.querySelector('[onclick*=\'goals\']'))">Go Back</button>
-									<button class="btn-add-funds" onclick="openAddFundsModalFromDetail()" style="margin-left: 10px; background: var(--primary-green); color: white; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer;">+ Add Funds</button>
 									<h2 id="detail-goal-name">Emergency Fund</h2>
 								</div>
 								<div class="detail-header-right">
@@ -931,24 +930,24 @@
 						<div class="input-group">
 							<select class="floating-input" id="goal-category" required="">
 								<option value="" selected="" disabled="" hidden=""></option>
-								<option value="Savings">💰 Savings</option>
-								<option value="Emergency Fund">🛡️ Emergency Fund</option>
-								<option value="Travel">✈️ Travel</option>
-								<option value="Tech">💻 Tech</option>
-								<option value="Home">🏠 Home</option>
-								<option value="Car">🚗 Car</option>
-								<option value="Investment">📈 Investment</option>
-								<option value="Other">✨ Other</option>
+								<option value="Savings" data-i18n="Savings">💰 Savings</option>
+								<option value="Emergency Fund" data-i18n="Emergency Fund">🛡️ Emergency Fund</option>
+								<option value="Travel" data-i18n="Travel">✈️ Travel</option>
+								<option value="Tech" data-i18n="Tech">💻 Tech</option>
+								<option value="Home" data-i18n="Home">🏠 Home</option>
+								<option value="Car" data-i18n="Car">🚗 Car</option>
+								<option value="Investment" data-i18n="Investment">📈 Investment</option>
+								<option value="Other" data-i18n="Other">✨ Other</option>
 							</select>
-							<label class="floating-label">Category</label>
+							<label class="floating-label" data-i18n="lbl_category">Category</label>
 						</div>
 						<div class="input-group">
 							<select class="floating-input" id="goal-priority" required="">
-								<option value="1">Low</option>
-								<option value="2">Medium</option>
-								<option value="3">High</option>
+								<option value="1" data-i18n="opt_low" data-dot="low">Low</option>
+								<option value="2" data-i18n="opt_medium" data-dot="medium">Medium</option>
+								<option value="3" data-i18n="opt_high" data-dot="high">High</option>
 							</select>
-							<label class="floating-label">Priority</label>
+							<label class="floating-label" data-i18n="lbl_priority">Priority</label>
 						</div>
 						<div class="input-group">
 							<input type="text" class="floating-input" id="goal-deadline" placeholder=" " required="">

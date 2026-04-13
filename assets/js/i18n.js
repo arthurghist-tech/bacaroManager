@@ -281,7 +281,13 @@ window.bbmTranslations = {
     "No transactions found for this wallet.": "No transactions found for this wallet.",
     "Target Date": "Target Date",
     "Add Funds": "Add Funds",
-    "No savings goals found. Add one to start tracking your progress.": "No savings goals found. Add one to start tracking your progress."
+    "No savings goals found. Add one to start tracking your progress.": "No savings goals found. Add one to start tracking your progress.",
+    "opt_low": "Low",
+    "opt_medium": "Medium",
+    "opt_high": "High",
+    "lbl_category": "Category",
+    "lbl_priority": "Priority",
+    "btn_add_funds": "Add Funds"
 },
     tl: {
     "str_7c8fc5cb": "Bacaro Budget Manager",
@@ -327,7 +333,7 @@ window.bbmTranslations = {
     "opt_this_year": "Ngayong Taon",
     "str_6f9dccd8": "PAMAGAT",
     "str_d01105a4": "HALAGA",
-    "str_94849514": "URI",
+    "str_94849514": "Uri",
     "str_633a6c7a": "PETSA",
     "str_5dfbfc49": "WALLET",
     "btn_add_wallet": "Magdagdag ng Bagong Wallet",
@@ -407,12 +413,12 @@ window.bbmTranslations = {
     "str_a99fe580": "Bagong Transaksyon",
     "str_b5a7adde": "Detalye",
     "str_6950810f": "Lipat",
-    "str_a1fa2777": "URI",
+    "str_a1fa2777": "Uri",
     "str_069b30db": "Cash",
     "str_f5049220": "E-Money",
     "str_73a61696": "Credit Card",
     "str_6311ae17": "Other",
-    "str_cb5fc492": "WALLET URI",
+    "str_cb5fc492": "Uri ng Wallet",
     "str_3da690d3": "WALLET (Other)",
     "str_b2f40690": "Halaga",
     "str_931feb5e": "SAVE TRANSACTION",
@@ -421,10 +427,10 @@ window.bbmTranslations = {
     "str_70d9be9b": "Kumpirmahin",
     "str_82178684": "Magdagdag ng Savings Goal",
     "str_2f9a7dfb": "Pamagat ng Layunin (hal. Emergency Fund)",
-    "str_492f264f": "Target Halaga",
+    "str_492f264f": "Target na Halaga",
     "str_0e2bbb5b": "Target na Petsa",
     "str_cd103e89": "SAVE GOAL",
-    "str_32710700": "Magpasok ng Pondo",
+    "str_32710700": "Maglagay ng Pondo",
     "str_1a9ee655": "Halaga to Add",
     "str_ff9bea94": "MAGPASOK NG PONDO",
     "str_1133ef9b": "Add WALLET",
@@ -564,8 +570,14 @@ window.bbmTranslations = {
     "No activity yet. Start by adding a transaction or transfer to see insights!": "Wala pang aktibidad. Magdagdag ng transaksyon o paglilipat para makita ang iyong ulat!",
     "No transactions found for this wallet.": "Walang nahanap na transaksyon para sa wallet na ito.",
     "Target Date": "Target na Petsa",
-    "Add Funds": "Magpasok ng Pondo",
-    "No savings goals found. Add one to start tracking your progress.": "Walang nakitang mga layunin sa pag-ipon. Magdagdag ng isa upang simulan ang pagsubaybay sa iyong progreso."
+    "Add Funds": "Maglagay ng Pondo",
+    "No savings goals found. Add one to start tracking your progress.": "Walang nakitang mga layunin sa pag-ipon. Magdagdag ng isa upang simulan ang pagsubaybay sa iyong progreso.",
+    "opt_low": "Mababa",
+    "opt_medium": "Katamtaman",
+    "opt_high": "Mataas",
+    "lbl_category": "Kategorya",
+    "lbl_priority": "Priyoridad",
+    "btn_add_funds": "Maglagay ng Pondo"
 }
 };
 

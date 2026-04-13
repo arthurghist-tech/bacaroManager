@@ -1796,6 +1796,7 @@ async function loadGoals() {
         const data = await res.json();
         window.goals = data.goals || [];
         renderGoals();
+        if (typeof lucide !== 'undefined') lucide.createIcons();
 
         if (skeleton) skeleton.style.display = 'none';
         if (container) container.style.display = 'grid';
@@ -1881,6 +1882,9 @@ function renderGoals() {
                     <div class="goal-meta-info">
                         ${monthlyTarget > 0 ? `<span>Target: ${formatCurrency(monthlyTarget)}/mo</span>` : ''}
                     </div>
+                    <button class="goal-card-add-funds" onclick="event.stopPropagation(); window.openAddFundsModal(${g.goal_id})" data-i18n="btn_add_funds">
+                        <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> Maglagay ng Pondo
+                    </button>
                 </div>
             </div>
         `;
@@ -2696,6 +2700,8 @@ function initializeCustomSelects() {
 			if (opt.selected) optionDiv.classList.add('selected');
 			const i18nKey = opt.getAttribute('data-i18n');
 			if (i18nKey) optionDiv.setAttribute('data-i18n', i18nKey);
+			const dot = opt.getAttribute('data-dot');
+			if (dot) optionDiv.setAttribute('data-dot', dot);
 			optionDiv.innerText = dict(opt.text.trim());
 			
 			optionDiv.addEventListener('click', (e) => {

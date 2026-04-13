@@ -248,7 +248,7 @@
             flex-direction: column;
         }
 
-        #main-dashboard, #main-transactions, #main-wallets, #main-wallet-details, #main-settings, #main-goals {
+        #main-dashboard, #main-transactions, #main-wallets, #main-wallet-details, #main-settings, #main-goals, #main-goal-details {
             flex-grow: 1; 
             background-color: var(--main-content-bg);
             backdrop-filter: blur(15px);
@@ -2452,7 +2452,7 @@ input[type=number] {
     }
 
     .wallet-history-section {
-        padding: 0;
+        padding: 0 30px 30px 30px;
     }
 
     /* Modals - Bottom Sheet on Mobile */
@@ -4723,3 +4723,51 @@ body.dark-mode ::-webkit-scrollbar-thumb {
 body.dark-mode ::-webkit-scrollbar-thumb:hover {
     background-color: rgba(255, 255, 255, 0.25);
 }
+
+		/* Priority Dots for Custom Selects */
+		.custom-option[data-dot]::before {
+			content: '';
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			border-radius: 50%;
+			margin-right: 12px;
+			vertical-align: middle;
+			box-shadow: 0 0 5px rgba(0,0,0,0.1);
+		}
+		.custom-option[data-dot="low"]::before { background: #95a5a6; }
+		.custom-option[data-dot="medium"]::before { background: #f1c40f; }
+		.custom-option[data-dot="high"]::before { background: #e74c3c; }
+
+		/* Goal Card Action Button */
+		.goal-card-add-funds {
+			margin-top: 18px;
+			background: rgba(89, 133, 57, 0.08);
+			color: var(--primary-green);
+			border: 1.5px solid rgba(89, 133, 57, 0.15);
+			padding: 10px 14px;
+			border-radius: 12px;
+			font-size: 0.82em;
+			font-weight: 800;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+			cursor: pointer;
+			transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+			width: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+		}
+		
+		.goal-card-add-funds:hover {
+			background: var(--primary-green);
+			color: white;
+			border-color: var(--primary-green);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 12px rgba(89, 133, 57, 0.2);
+		}
+		
+		.goal-card-add-funds:active {
+			transform: scale(0.98);
+		}
