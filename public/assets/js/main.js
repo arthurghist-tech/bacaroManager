@@ -507,7 +507,7 @@
 				const walletLinks = window.wallets.map(w =>
 					`<a href="#" onclick="event.preventDefault(); return updateWalletFilter(${w.wallet_id}, '${escapeHtml(w.name)}')">${escapeHtml(w.name)}</a>`
 				).join('');
-				dashWalletContent.innerHTML = `<a href="#" onclick="event.preventDefault(); const dictInner = window.getTranslation ? window.getTranslation : (k) => k; return updateWalletFilter(null, dictInner('ALL WALLETS'))">${dict('ALL WALLETS')}</a>${walletLinks}`;
+				dashWalletContent.innerHTML = `<a href="#" onclick="event.preventDefault(); const dictInner = window.getTranslation ? window.getTranslation : (k) => k; return updateWalletFilter(null, dictInner('ALL WALLETS'))" data-i18n="str_6cdf3326">${dict('ALL WALLETS')}</a>${walletLinks}`;
 			}
 
 			const filterWallet = document.getElementById('tx-filter-wallet');
@@ -1094,6 +1094,13 @@
 				languageSelect.addEventListener('change', () => {
 					localStorage.setItem('bbm_language', languageSelect.value);
 					if(window.applyTranslations) window.applyTranslations();
+					
+					// Re-render dynamic components to update their text 
+					if (typeof renderWallets === 'function') renderWallets();
+					if (typeof renderGoals === 'function') renderGoals();
+					if (typeof renderWalletDropdowns === 'function') renderWalletDropdowns();
+					if (typeof loadTransactions === 'function') loadTransactions();
+					
 					showSavedToast();
 				});
 			}
@@ -2985,7 +2992,18 @@ function updateWalletFilter(walletId, walletName) {
     window.dashboardWalletFilter = walletId ? Number(walletId) : null;
 
     const btn = document.getElementById('dashboard-wallet-dropbtn');
-    if (btn) btn.innerHTML = `${walletName} <span class="arrow-icon">▾</span>`;
+    if (btn) {
+        const span = btn.querySelector('span:not(.arrow-icon)');
+        if (span) {
+            span.innerText = walletName;
+            // If it's All Wallets, keep the i18n key so it flips languages correctly
+            if (!walletId) {
+                span.setAttribute('data-i18n', 'str_8d1df2f4');
+            } else {
+                span.removeAttribute('data-i18n');
+            }
+        }
+    }
 
     const sourceTransactions = window.allTransactions || window.currentTransactions || [];
     const dateFiltered = filterTransactionsByRange(window.dashboardDateRange || 'ALL TIME', sourceTransactions);
