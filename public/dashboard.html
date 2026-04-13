@@ -93,7 +93,7 @@
 									<div class="range-dropdown" style="margin-left: 10px;">
 										<button class="range-dropbtn" id="dashboard-wallet-dropbtn"><span data-i18n="str_8d1df2f4">ALL WALLETS</span><span class="arrow-icon">▾</span></button>
 										<div class="range-dropdown-content" id="dashboard-wallet-dropdown-content">
-											<a href="#" onclick="event.preventDefault(); return updateWalletFilter(null, 'ALL WALLETS')" data-i18n="str_6cdf3326">ALL
+											<a href="#" onclick="event.preventDefault(); const dict = window.getTranslation ? window.getTranslation : (k) => k; return updateWalletFilter(null, dict('ALL WALLETS'))" data-i18n="str_6cdf3326">ALL
 												WALLETS</a>
 										</div>
 									</div>

@@ -507,7 +507,7 @@
 				const walletLinks = window.wallets.map(w =>
 					`<a href="#" onclick="event.preventDefault(); return updateWalletFilter(${w.wallet_id}, '${escapeHtml(w.name)}')">${escapeHtml(w.name)}</a>`
 				).join('');
-				dashWalletContent.innerHTML = `<a href="#" onclick="event.preventDefault(); return updateWalletFilter(null, '${dict('ALL WALLETS')}')">${dict('ALL WALLETS')}</a>${walletLinks}`;
+				dashWalletContent.innerHTML = `<a href="#" onclick="event.preventDefault(); const dictInner = window.getTranslation ? window.getTranslation : (k) => k; return updateWalletFilter(null, dictInner('ALL WALLETS'))">${dict('ALL WALLETS')}</a>${walletLinks}`;
 			}
 
 			const filterWallet = document.getElementById('tx-filter-wallet');
