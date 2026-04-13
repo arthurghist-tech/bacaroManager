@@ -187,32 +187,27 @@ If the user explicitly asks for a visual summary, graph, chart, or visual breakd
 - If they ask about Expenses, output exactly "[CHART:EXPENSE]" at the very end of your response.
 - If they ask for a general summary without specifying, default to outputting "[CHART:EXPENSE]".
 
-Here is the user's SAVINGS GOALS data:
+Here is the user's SAVINGS GOALS data (SECONDARY context — only use when goals are explicitly asked about):
 ${goalsText}
-When asked about goals, provide advice on progress, monthly savings needed, and priority management.`
-      };
 
-      // Fetch MINIMAL history for conversational continuity only
-      // We deliberately keep this small to prevent the AI from
-      // trusting stale financial data from its own old responses
-      const history = await sql`
-        SELECT role, content
-        FROM ai_chats
-        WHERE acc_id = ${acc_id}
-        ORDER BY chat_id DESC
-        LIMIT 4
-      `;
-      // Only keep user messages from history to avoid data pollution
-      // from old AI responses that contain outdated numbers
-      const apiMessages = history.reverse()
-        .filter(row => row.role === 'user')
-        .map(row => ({
-          role: row.role,
-          content: row.content
-        }));
+QUERY TYPE ROUTING — follow these rules strictly:
+1. "Monthly Summary" or "summary" → Focus ONLY on TRANSACTION data: total income, total expenses, net cash flow, spending categories, and wallet balances. Do NOT talk about savings goals unless the user specifically mentions them.
+2. "Top Expense" or "expenses" → Analyze TRANSACTION data to find the biggest expense categories and amounts.
+3. "Recent Transactions" → List recent transactions from the transaction data.
+4. "Wallet Breakdown" → Show wallet balances and transaction activity per wallet.
+5. "Budget Advice" or "Savings Tips" → Give general budgeting advice. You may briefly reference goals if relevant, but focus on transaction patterns.
+6. "My goals" or "goals" or "savings goals" → ONLY THEN provide a detailed goals breakdown with progress, deadlines, and savings advice.
+7. Any other finance question → Use the most relevant data source (transactions, wallets, or goals) based on context.`
+      };
 
       const apiKey = process.env.DEEPSEEK_API_KEY ? process.env.DEEPSEEK_API_KEY.replace(/^"|"$/g, '') : null;
       if (!apiKey) return res.status(500).json({ error: 'API key missing' });
+
+      // Send ONLY the system prompt + current message to the AI.
+      // History is intentionally excluded because:
+      // 1. The system prompt already contains all real-time financial data
+      // 2. Including previous user messages caused the AI to respond to old queries
+      const apiMessages = [{ role: 'user', content: message }];
 
       // Call API with STREAMING enabled
       const fetchRes = await fetch('https://api.deepseek.com/chat/completions', {
