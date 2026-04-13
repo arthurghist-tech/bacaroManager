@@ -1800,6 +1800,32 @@ async function loadGoals() {
     }
 }
 
+function calculateGoalStatus(current, target, deadline) {
+    if (current >= target) return { label: 'COMPLETED', class: 'status-active' };
+    if (!deadline) return { label: 'ACTIVE', class: 'status-active' };
+
+    const now = new Date();
+    const targetDate = new Date(deadline);
+    const totalDays = (targetDate - new Date()) / (1000 * 60 * 60 * 24);
+    
+    if (totalDays <= 0) return { label: 'OVERDUE', class: 'status-inactive' };
+    
+    // Simple heuristic: if we have more than 10% of time left but less than 5% progress, mark as needs attention
+    const progress = (current / target) * 100;
+    if (progress < 10 && totalDays < 30) return { label: 'NEEDS ATTENTION', class: 'status-inactive' };
+    
+    return { label: 'ON TRACK', class: 'status-active' };
+}
+
+function calculateMonthlyTarget(current, target, deadline) {
+    if (!deadline || current >= target) return 0;
+    const now = new Date();
+    const targetDate = new Date(deadline);
+    const monthsLeft = (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth());
+    const effectiveMonths = Math.max(1, monthsLeft);
+    return (target - current) / effectiveMonths;
+}
+
 function renderGoals() {
     if (typeof updateSidebarStats === 'function') updateSidebarStats();
     const container = document.getElementById('goal-grid-container');
@@ -1817,35 +1843,87 @@ function renderGoals() {
         let percentage = target > 0 ? (current / target) * 100 : 0;
         if (percentage > 100) percentage = 100;
 
-        let deadlineStr = '';
-        if (g.deadline) {
-            const d = new Date(g.deadline);
-            const dict = window.getTranslation ? window.getTranslation : (k) => k;
-            deadlineStr = `${dict("Target Date")}: ${d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}`;
-        }
+        const status = calculateGoalStatus(current, target, g.deadline);
+        const monthlyTarget = calculateMonthlyTarget(current, target, g.deadline);
+        
+        const categoryMap = {
+            'Savings': '💰',
+            'Emergency Fund': '🛡️',
+            'Travel': '✈️',
+            'Tech': '💻',
+            'Home': '🏠',
+            'Car': '🚗',
+            'Investment': '📈'
+        };
+        const icon = categoryMap[g.category] || '✨';
 
         return `
-            <div class="goal-card">
+            <div class="card-item goal-card-premium" onclick="openGoalDetails(${g.goal_id})">
                 <button class="card-delete-btn" onclick="event.stopPropagation(); handleDeleteGoal(${g.goal_id}, '${escapeHtml(g.title)}')">×</button>
-                <h3>${escapeHtml(g.title)}</h3>
-                <div class="goal-deadline">${escapeHtml(deadlineStr)}</div>
-                
-                <div class="goal-amounts">
-                    <span class="goal-current">${formatCurrency(current)}</span>
-                    <span class="goal-target">${formatCurrency(target)}</span>
-                </div>
-                
-                <div class="progress-bar-container">
-                    <div class="progress-bar-fill" style="width: ${percentage}%;"></div>
-                </div>
-
-                <div class="goal-actions">
-                    <button class="btn-add-funds" onclick="openAddFundsModal(${g.goal_id})">${window.getTranslation ? window.getTranslation('Add Funds') : 'Add Funds'}</button>
+                <div class="card-category-icon">${icon}</div>
+                <div class="card-status-badge status-${status.label.toLowerCase().replace(' ', '-')}">${status.label}</div>
+                <div class="card-content">
+                    <h3 class="card-name">${escapeHtml(g.title)}</h3>
+                    <div class="goal-priority-stars">
+                        ${'★'.repeat(g.priority || 1)}${'☆'.repeat(3 - (g.priority || 1))}
+                    </div>
+                    <p class="card-balance">${formatCurrency(current)} / ${formatCurrency(target)}</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" style="width: ${percentage}%;"></div>
+                    </div>
+                    <div class="goal-meta-info">
+                        ${monthlyTarget > 0 ? `<span>Target: ${formatCurrency(monthlyTarget)}/mo</span>` : ''}
+                    </div>
                 </div>
             </div>
         `;
     }).join('');
 }
+
+window.openGoalDetails = function(goalId) {
+    const goal = (window.goals || []).find(g => g.goal_id === goalId);
+    if (!goal) return;
+
+    document.getElementById('detail-goal-name').innerText = goal.title;
+    document.getElementById('detail-goal-category').innerText = goal.category || 'Savings';
+    
+    const status = calculateGoalStatus(goal.current_amount, goal.target_amount, goal.deadline);
+    const statusBadge = document.getElementById('detail-goal-status');
+    statusBadge.innerText = status.label;
+    statusBadge.className = 'badge-status ' + (status.class);
+
+    const progress = (goal.current_amount / goal.target_amount * 100).toFixed(1);
+    document.getElementById('detail-goal-progress').innerText = progress + '%';
+    
+    const monthly = calculateMonthlyTarget(goal.current_amount, goal.target_amount, goal.deadline);
+    document.getElementById('detail-goal-monthly-target').innerText = formatCurrency(monthly);
+    
+    const remaining = Math.max(0, goal.target_amount - goal.current_amount);
+    document.getElementById('detail-goal-remaining').innerText = formatCurrency(remaining);
+
+    const historyList = document.getElementById('goal-history-list');
+    if (historyList) {
+        if (!goal.history || goal.history.length === 0) {
+            historyList.innerHTML = '<div class="empty-history"><p>No contribution history yet.</p></div>';
+        } else {
+            historyList.innerHTML = `
+                <div class="transaction-row header-row">
+                    <span>DATE</span><span>AMOUNT</span><span>NOTE</span>
+                </div>
+            ` + goal.history.map(h => `
+                <div class="transaction-item">
+                    <div class="transaction-row">
+                        <span class="rec-date">${formatDate(h.created_at)}</span>
+                        <span class="rec-stats income">${formatCurrency(h.amount)}</span>
+                        <span class="rec-title">${escapeHtml(h.note || 'Manual add')}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
+
+    showView('goal-details', document.querySelector('[onclick*="goals"]'));
+};
 
 window.handleDeleteGoal = async function(goalId, title) {
     showConfirm('Delete Goal', `Are you sure you want to delete the goal "${title}"?`, async () => {
@@ -1920,6 +1998,8 @@ window.handleDeleteGoal = async function(goalId, title) {
 					const title = document.getElementById('goal-title').value.trim();
 					const target_amount = parseFloat(document.getElementById('goal-target-amount').value);
 					const deadline = document.getElementById('goal-deadline').value;
+					const category = document.getElementById('goal-category').value;
+					const priority = parseInt(document.getElementById('goal-priority').value, 10);
 					
 					const messageDiv = document.getElementById('add-goal-message');
 					messageDiv.innerHTML = '';
@@ -1929,7 +2009,7 @@ window.handleDeleteGoal = async function(goalId, title) {
 					if (deadline) {
 						const selectedDate = new Date(deadline);
 						const today = new Date();
-						today.setHours(0, 0, 0, 0); // Reset time to start of day
+						today.setHours(0, 0, 0, 0); 
 						
 						if (selectedDate < today) {
 							messageDiv.innerHTML = 'Please select a valid future date.';
@@ -1938,7 +2018,6 @@ window.handleDeleteGoal = async function(goalId, title) {
 						}
 					}
 
-					// Validate required fields
 					if (!title || isNaN(target_amount) || target_amount <= 0) {
 						messageDiv.innerHTML = 'Please fill in all required fields with valid values.';
 						messageDiv.className = 'message error';
@@ -1950,20 +2029,13 @@ window.handleDeleteGoal = async function(goalId, title) {
 						const res = await fetch('/api/goals', {
 							method: 'POST',
 							headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
-							body: JSON.stringify({ title, target_amount, deadline })
+							body: JSON.stringify({ title, target_amount, deadline, category, priority })
 						});
 						
 						const payload = await readResponsePayload(res);
 						if (!res.ok) throw new Error(getErrorMessage(payload, 'Failed to create goal'));
 						
-						addGoalForm.reset();
-						// Reset deadline to tomorrow after form reset
-						const deadlineInput = document.getElementById('goal-deadline');
-						if (deadlineInput) {
-							const tomorrow = new Date();
-							tomorrow.setDate(tomorrow.getDate() + 1);
-							deadlineInput.value = tomorrow.toISOString().split('T')[0];
-						}
+						resetGoalForm();
 						closeAllModals();
 						showToast('Goal created successfully');
 						await loadGoals();
@@ -1982,6 +2054,7 @@ window.handleDeleteGoal = async function(goalId, title) {
 					e.preventDefault();
 					const goal_id = document.getElementById('fund-goal-id').value;
 					const add_amount = parseFloat(document.getElementById('fund-amount').value);
+					const note = document.getElementById('fund-note').value.trim();
 					
 					const messageDiv = document.getElementById('add-funds-message');
 					messageDiv.innerHTML = '';
@@ -1992,13 +2065,13 @@ window.handleDeleteGoal = async function(goalId, title) {
 						const res = await fetch('/api/goals', {
 							method: 'PUT',
 							headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
-							body: JSON.stringify({ goal_id, add_amount })
+							body: JSON.stringify({ goal_id, add_amount, note })
 						});
 						
 						const payload = await readResponsePayload(res);
 						if (!res.ok) throw new Error(getErrorMessage(payload, 'Failed to update goal'));
 						
-						addFundsForm.reset();
+						resetAddFundsForm();
 						closeAllModals();
 						showToast('Funds added successfully');
 						await loadGoals();

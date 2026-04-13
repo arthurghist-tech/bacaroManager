@@ -407,6 +407,43 @@
 						</main>
 					</div>
 
+					<div id="view-goal-details" class="main-view" style="display: none;">
+						<main id="main-goal-details">
+							<div class="wallet-detail-header">
+								<div class="detail-header-left">
+									<button class="btn-back" onclick="showView('goals', document.querySelector('[onclick*=\'goals\']'))">Go Back</button>
+									<h2 id="detail-goal-name">Emergency Fund</h2>
+								</div>
+								<div class="detail-header-right">
+									<span id="detail-goal-category" class="badge-type">Savings</span>
+									<span id="detail-goal-status" class="badge-status status-active">ON TRACK</span>
+								</div>
+							</div>
+
+							<div class="goal-stats-grid">
+								<div class="stat-card">
+									<div class="stat-label">Progress</div>
+									<div class="stat-value" id="detail-goal-progress">0%</div>
+								</div>
+								<div class="stat-card">
+									<div class="stat-label">Target Monthly</div>
+									<div class="stat-value" id="detail-goal-monthly-target">₱0.00</div>
+								</div>
+								<div class="stat-card">
+									<div class="stat-label">Remaining</div>
+									<div class="stat-value" id="detail-goal-remaining">₱0.00</div>
+								</div>
+							</div>
+
+							<div class="wallet-history-section">
+								<h3 data-i18n="goal_contribution_history">Contribution History</h3>
+								<div id="goal-history-list" class="transaction-list">
+									<!-- Dynamic content -->
+								</div>
+							</div>
+						</main>
+					</div>
+
 					<div id="view-ai" class="main-view" style="display: none;">
 						<div id="kwarta-ai-interface"></div>
 					</div>
@@ -882,6 +919,28 @@
 							<label class="floating-label" data-i18n="str_492f264f">Target Amount</label>
 						</div>
 						<div class="input-group">
+							<select class="floating-input" id="goal-category" required="">
+								<option value="" selected="" disabled="" hidden=""></option>
+								<option value="Savings">💰 Savings</option>
+								<option value="Emergency Fund">🛡️ Emergency Fund</option>
+								<option value="Travel">✈️ Travel</option>
+								<option value="Tech">💻 Tech</option>
+								<option value="Home">🏠 Home</option>
+								<option value="Car">🚗 Car</option>
+								<option value="Investment">📈 Investment</option>
+								<option value="Other">✨ Other</option>
+							</select>
+							<label class="floating-label">Category</label>
+						</div>
+						<div class="input-group">
+							<select class="floating-input" id="goal-priority" required="">
+								<option value="1">Low</option>
+								<option value="2">Medium</option>
+								<option value="3">High</option>
+							</select>
+							<label class="floating-label">Priority</label>
+						</div>
+						<div class="input-group">
 							<input type="text" class="floating-input" id="goal-deadline" placeholder=" " required="">
 							<label class="floating-label" data-i18n="str_0e2bbb5b">Target Date</label>
 							<i data-lucide="calendar" class="input-icon"></i>
@@ -903,6 +962,10 @@
 						<div class="input-group">
 							<input type="number" class="floating-input" id="fund-amount" placeholder=" " inputmode="decimal" step="0.01" min="0.01" required="">
 							<label class="floating-label" data-i18n="str_1a9ee655">Amount to Add</label>
+						</div>
+						<div class="input-group">
+							<input type="text" class="floating-input" id="fund-note" placeholder=" ">
+							<label class="floating-label">Note (Optional)</label>
 						</div>
 						<div id="add-funds-message" class="message"></div>
 						<button type="submit" class="btn btn-primary" data-i18n="str_ff9bea94">ADD FUNDS</button>
