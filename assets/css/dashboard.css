@@ -2291,11 +2291,34 @@ input[type=number] {
 
 		.wallet-stat-card {
 			background: var(--card-bg);
-			padding: 12px;
-			border-radius: 10px;
-			box-shadow: none;
+			padding: 18px 12px;
+			border-radius: 14px;
+			box-shadow: var(--shadow-subtle);
 			border: var(--border-whisper);
 			text-align: center;
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+			position: relative;
+			overflow: hidden;
+			cursor: default;
+		}
+
+		.wallet-stat-card::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 3px;
+			border-radius: 0 0 14px 14px;
+		}
+
+		.wallet-stat-card.income::after { background: linear-gradient(90deg, var(--income-color), #6dd5a0); }
+		.wallet-stat-card.expense::after { background: linear-gradient(90deg, var(--expense-color), #f1948a); }
+		.wallet-stat-card.transfer::after { background: linear-gradient(90deg, var(--transfer-color), #85c1e9); }
+
+		.wallet-stat-card:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 		}
 
 		.wallet-stat-card .stat-label {
@@ -2308,8 +2331,8 @@ input[type=number] {
 		}
 
 		.wallet-stat-card .stat-value {
-			font-size: 1.1em;
-			font-weight: 700;
+			font-size: 1.25em;
+			font-weight: 800;
 			font-variant-numeric: tabular-nums;
 		}
 

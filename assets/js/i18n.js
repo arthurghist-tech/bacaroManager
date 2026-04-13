@@ -431,7 +431,7 @@ window.bbmTranslations = {
     "str_0e2bbb5b": "Target na Petsa",
     "str_cd103e89": "SAVE GOAL",
     "str_32710700": "Maglagay ng Pondo",
-    "str_1a9ee655": "Halaga to Add",
+    "str_1a9ee655": "Halagang Idadagdag",
     "str_ff9bea94": "MAGPASOK NG PONDO",
     "str_1133ef9b": "Add WALLET",
     "str_c463361a": "WALLET Name",
