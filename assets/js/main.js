@@ -573,6 +573,7 @@
 
 		// Function to "open" a wallet's details
 		function openWalletDetails(name, type, status, balance = 0) {
+			window.currentActiveWalletName = name;
             const dict = window.getTranslation ? window.getTranslation : (k) => k;
 			document.getElementById('detail-wallet-name').innerText = name;
 			document.getElementById('detail-wallet-type').innerText = dict(type);
@@ -2592,6 +2593,20 @@ window.handleDeleteGoal = async function(goalId, title) {
 						closeTransactionModal();
 						await Promise.all([loadTransactions(), loadWallets()]); // Refresh wallet balances
 						showToast(transId ? 'Transaction updated' : 'Transaction saved', 'success');
+
+						// Auto-refresh wallet details if viewing a specific wallet
+						const detailsView = document.getElementById('view-wallet-details');
+						if (detailsView && detailsView.style.display !== 'none' && window.currentActiveWalletName) {
+							const updatedWallet = (window.wallets || []).find(w => w.name === window.currentActiveWalletName);
+							if (updatedWallet) {
+								openWalletDetails(
+									updatedWallet.name,
+									updatedWallet.type,
+									updatedWallet.status,
+									updatedWallet.calculated_balance
+								);
+							}
+						}
 					} catch (err) {
 						hideCoinLoader();
 						if (messageDiv) {
