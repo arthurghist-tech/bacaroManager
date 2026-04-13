@@ -1844,26 +1844,28 @@ async function loadGoals() {
 }
 
 function calculateGoalStatus(current, target, deadline) {
-    if (current >= target) return { label: 'COMPLETED', class: 'status-active' };
-    if (!deadline) return { label: 'ACTIVE', class: 'status-active' };
+    if (current >= target) return { labelKey: 'status_completed', class: 'status-active' };
+    if (!deadline) return { labelKey: 'status_active', class: 'status-active' };
 
     const now = new Date();
     const targetDate = new Date(deadline);
-    const totalDays = (targetDate - new Date()) / (1000 * 60 * 60 * 24);
+    const totalDays = (targetDate - now.getFullYear() >= 1970 ? (targetDate - now) : 0) / (1000 * 60 * 60 * 24);
     
-    if (totalDays <= 0) return { label: 'OVERDUE', class: 'status-inactive' };
+    if (totalDays <= 0) return { labelKey: 'status_overdue', class: 'status-inactive' };
     
-    // Simple heuristic: if we have more than 10% of time left but less than 5% progress, mark as needs attention
     const progress = (current / target) * 100;
-    if (progress < 10 && totalDays < 30) return { label: 'NEEDS ATTENTION', class: 'status-inactive' };
+    if (progress < 10 && totalDays < 30) return { labelKey: 'status_needs_attention', class: 'status-inactive' };
     
-    return { label: 'ON TRACK', class: 'status-active' };
+    return { labelKey: 'status_on_track', class: 'status-active' };
 }
 
 function calculateMonthlyTarget(current, target, deadline) {
     if (!deadline || current >= target) return 0;
     const now = new Date();
     const targetDate = new Date(deadline);
+    
+    if (targetDate < now) return 0; // Deadline passed
+    
     const monthsLeft = (targetDate.getFullYear() - now.getFullYear()) * 12 + (targetDate.getMonth() - now.getMonth());
     const effectiveMonths = Math.max(1, monthsLeft);
     return (target - current) / effectiveMonths;
@@ -1912,7 +1914,7 @@ function renderGoals() {
                     <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
                 </button>
                 <div class="card-category-icon"><i data-lucide="${iconName}"></i></div>
-                <div class="card-status-badge status-${status.label.toLowerCase().replace(' ', '-')}">${status.label}</div>
+                <div class="card-status-badge ${status.class}">${dict(status.labelKey)}</div>
                 <div class="card-content">
                     <h3 class="card-name">${escapeHtml(g.title)}</h3>
                     <div class="goal-priority-indicator priority-${priorityLabel.toLowerCase()}">
@@ -1949,7 +1951,8 @@ window.openGoalDetails = function(goalId) {
     
     const status = calculateGoalStatus(goal.current_amount, goal.target_amount, goal.deadline);
     const statusBadge = document.getElementById('detail-goal-status');
-    statusBadge.innerText = status.label;
+    const dict = window.getTranslation ? window.getTranslation : (k) => k;
+    statusBadge.innerText = dict(status.labelKey);
     statusBadge.className = 'badge-status ' + (status.class);
 
     const rawProgress = (goal.current_amount / goal.target_amount * 100);

@@ -287,7 +287,16 @@ window.bbmTranslations = {
     "opt_high": "High",
     "lbl_category": "Category",
     "lbl_priority": "Priority",
-    "btn_add_funds": "Add Funds"
+    "btn_add_funds": "Add Funds",
+    "goal_detail_progress": "Progress",
+    "goal_detail_monthly": "Target Monthly",
+    "goal_detail_remaining": "Remaining",
+    "goal_detail_history": "Contribution History",
+    "status_completed": "COMPLETED",
+    "status_active": "ACTIVE",
+    "status_overdue": "OVERDUE",
+    "status_needs_attention": "NEEDS ATTENTION",
+    "status_on_track": "ON TRACK"
 },
     tl: {
     "str_7c8fc5cb": "Bacaro Budget Manager",
@@ -577,7 +586,16 @@ window.bbmTranslations = {
     "opt_high": "Mataas",
     "lbl_category": "Kategorya",
     "lbl_priority": "Priyoridad",
-    "btn_add_funds": "Maglagay ng Pondo"
+    "btn_add_funds": "Maglagay ng Pondo",
+    "goal_detail_progress": "Progreso",
+    "goal_detail_monthly": "Buwanang Target",
+    "goal_detail_remaining": "Natitira",
+    "goal_detail_history": "Kasaysayan ng Kontribusyon",
+    "status_completed": "TAPOS NA",
+    "status_active": "AKTIBO",
+    "status_overdue": "HULI NA",
+    "status_needs_attention": "KAILANGAN NG PANSIN",
+    "status_on_track": "NASA TAMANG LANDAS"
 }
 };
 
