@@ -243,7 +243,7 @@ async function handleSendMessage() {
     const sendBtn = document.querySelector('.btn-send');
     if (!input || !sendBtn) return;
     
-    const message = input.value.trim();
+    if (sendBtn.disabled) return; const message = input.value.trim();
     if (!message) return;
     
     // Clear input & append user message
