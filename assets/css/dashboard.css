@@ -1991,11 +1991,12 @@ input[type=number] {
 			color: #8cc36a;
 		}
 
-		/* --- Card Delete Button --- */
-		.card-delete-btn {
+		/* --- Card Delete Button (Goal-specific) --- */
+		.goal-card-premium .card-delete-btn {
 			position: absolute;
 			top: 12px;
 			right: -40px;
+			left: auto;
 			width: 30px;
 			height: 30px;
 			border-radius: 8px;
@@ -2009,6 +2010,7 @@ input[type=number] {
 			transition: all 0.3s ease;
 			z-index: 5;
 			opacity: 0;
+			font-size: inherit;
 		}
 
 		.goal-card-premium:hover .card-delete-btn {
@@ -2016,15 +2018,15 @@ input[type=number] {
 			opacity: 1;
 		}
 
-		.card-delete-btn:hover {
+		.goal-card-premium .card-delete-btn:hover {
 			background: #e74c3c;
 			color: white;
 			border-color: #e74c3c;
 			transform: scale(1.1);
 		}
 
-		/* --- Status Badge --- */
-		.card-status-badge {
+		/* --- Status Badge (Goal-specific overrides) --- */
+		.goal-card-premium .card-status-badge {
 			position: absolute;
 			top: 20px;
 			right: 20px;
@@ -2033,6 +2035,15 @@ input[type=number] {
 			font-size: 0.6em;
 			font-weight: 800;
 			letter-spacing: 1px;
+			background: #e6f7ed;
+			color: #27ae60;
+			border: none;
+			backdrop-filter: none;
+			gap: 0;
+		}
+
+		.goal-card-premium .card-status-badge::before {
+			display: none;
 		}
 
 		.status-on-track { background: #e6f7ed; color: #27ae60; }
