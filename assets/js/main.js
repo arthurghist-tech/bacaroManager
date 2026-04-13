@@ -121,7 +121,11 @@
 		let goalDatePicker = null;
 
 		function openAddGoalModal() { 
-			closeAllModals(); 
+			closeAllModals();
+			
+			// Reset the entire form first
+			resetGoalForm();
+			
 			document.getElementById('add-goal-modal').classList.add('active');
 			
 			// Initialize or reset Flatpickr
@@ -138,7 +142,6 @@
 					animate: true,
 					position: "auto",
 					onChange: function(selectedDates, dateStr, instance) {
-						// Ensure label stays floated if date is selected
 						const group = document.getElementById('goal-deadline').closest('.input-group');
 						if (group) group.classList.add('has-value');
 						validateGoalDeadline();
@@ -153,13 +156,6 @@
 			const deadlineInput = document.getElementById('goal-deadline');
 			const group = deadlineInput ? deadlineInput.closest('.input-group') : null;
 			if (group) group.classList.add('has-value');
-
-			// Clear any previous error messages
-			const messageDiv = document.getElementById('add-goal-message');
-			if (messageDiv) {
-				messageDiv.innerHTML = '';
-				messageDiv.className = 'message';
-			}
 		}
 
 		function resetGoalForm() {
@@ -180,6 +176,19 @@
 				messageDiv.innerHTML = '';
 				messageDiv.className = 'message';
 			}
+
+			// Reset custom select wrappers inside the goal form
+			form.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+				const select = wrapper.querySelector('select');
+				if (select) {
+					// Unwrap: move select back to parent and remove wrapper
+					wrapper.parentNode.insertBefore(select, wrapper);
+					select.style.display = '';
+					wrapper.remove();
+				}
+			});
+			// Re-initialize custom selects so they render fresh
+			initializeCustomSelects();
 
 			// Reset Input Groups
 			form.querySelectorAll('.input-group').forEach(group => {
@@ -1865,8 +1874,9 @@ function renderGoals() {
     const container = document.getElementById('goal-grid-container');
     if (!container) return;
 
+    const dict = window.getTranslation ? window.getTranslation : (k) => k;
+
     if (!window.goals || window.goals.length === 0) {
-        const dict = window.getTranslation ? window.getTranslation : (k) => k;
         container.innerHTML = `<p style="grid-column: 1 / -1; color: #666; text-align: center;">${dict("No savings goals found. Add one to start tracking your progress.")}</p>`;
         return;
     }
@@ -1909,7 +1919,7 @@ function renderGoals() {
                         ${monthlyTarget > 0 ? `<span>Target: ${formatCurrency(monthlyTarget)}/mo</span>` : ''}
                     </div>
                     <button class="goal-card-add-funds" onclick="event.stopPropagation(); window.openAddFundsModal(${g.goal_id})" data-i18n="btn_add_funds">
-                        <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> Maglagay ng Pondo
+                        <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> ${dict('Add Funds')}
                     </button>
                 </div>
             </div>
