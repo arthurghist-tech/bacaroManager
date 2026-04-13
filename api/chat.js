@@ -88,12 +88,68 @@ export default async function handler(req, res) {
         console.error('Chat API: ERROR fetching transactions:', e.message);
       }
 
+      // Fetch user's wallets with calculated balances for accurate context
+      let walletsText = "No wallets found.";
+      try {
+        const wallets = await sql`
+          SELECT 
+            w.name, 
+            w.type, 
+            w.initial_balance, 
+            w.status,
+            (
+              w.initial_balance + 
+              COALESCE(SUM(CASE 
+                WHEN t.type = 'Income' AND t.wallet_id = w.wallet_id THEN t.amount 
+                WHEN t.type = 'Transfer' AND t.transfer_to_wallet_id = w.wallet_id THEN t.amount
+                WHEN t.type = 'Transfer'
+                  AND t.transfer_to_wallet_id IS NULL
+                  AND t.wallet_id = w.wallet_id
+                  AND (t.description ILIKE 'Transfer from%' OR t.description ILIKE 'Transfer In from%')
+                THEN t.amount
+                ELSE 0 END), 0) - 
+              COALESCE(SUM(CASE 
+                WHEN t.type = 'Expense' AND t.wallet_id = w.wallet_id THEN t.amount 
+                WHEN t.type = 'Transfer' AND t.transfer_from_wallet_id = w.wallet_id THEN t.amount
+                WHEN t.type = 'Transfer'
+                  AND t.transfer_from_wallet_id IS NULL
+                  AND t.wallet_id = w.wallet_id
+                  AND (t.description ILIKE 'Transfer to%' OR t.description ILIKE 'Transfer Out to%')
+                THEN t.amount
+                ELSE 0 END), 0)
+            ) as current_balance
+          FROM wallets w
+          LEFT JOIN transactions t 
+            ON t.account_id = w.account_id
+          WHERE w.account_id = ${acc_id}
+          GROUP BY w.wallet_id
+          ORDER BY w.created_at ASC
+        `;
+        console.log('Chat API: Found', wallets.length, 'wallets');
+        if (wallets.length > 0) {
+          walletsText = JSON.stringify(wallets.map(w => ({
+            name: w.name,
+            type: w.type,
+            initial_balance: w.initial_balance,
+            current_balance: w.current_balance,
+            status: w.status
+          })));
+        }
+      } catch(e) {
+        console.error('Chat API: ERROR fetching wallets:', e.message);
+      }
+
       // System Prompt
       const systemPrompt = {
         role: 'system',
         content: `You are Kwarta AI, a strict financial assistant bot. You must ONLY answer questions related to finance, budgeting, money management, investments, economics, or the user's transaction data. If the user asks about anything else, politely decline and steer the conversation back to finance. Be helpful, concise, and friendly. You MUST use Markdown for formatting (lists, bolding, etc.).
 
-Here is the user's REAL-TIME transaction data right now:
+Here is the user's REAL-TIME wallet data (this is the AUTHORITATIVE source for balances):
+${walletsText}
+
+IMPORTANT: Each wallet has an "initial_balance" (the starting amount when created) and a "current_balance" (initial + all income/transfers in - all expenses/transfers out). When the user asks "what is my balance for X wallet?", ALWAYS use the "current_balance" field from the wallet data above. Do NOT try to manually calculate it from transactions — the current_balance already includes the initial balance and all transactions.
+
+Here is the user's REAL-TIME transaction data (recent activity):
 ${transactionsText}
 
 CRITICAL DATA OVERRIDE: 
