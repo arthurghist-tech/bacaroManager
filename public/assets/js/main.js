@@ -1625,7 +1625,10 @@
                     wrapper.classList.remove('has-value');
                     wrapper.classList.remove('open');
                     const triggerSpan = wrapper.querySelector('.custom-select-trigger span');
-                    if (triggerSpan) triggerSpan.innerText = '';
+                    if (triggerSpan) {
+                        triggerSpan.innerText = '';
+                        triggerSpan.removeAttribute('data-i18n');
+                    }
                     wrapper.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
                 });
                 }
@@ -1644,7 +1647,10 @@
                         wrapper.classList.remove('has-value');
                         wrapper.classList.remove('open');
                         const triggerSpan = wrapper.querySelector('.custom-select-trigger span');
-                        if (triggerSpan) triggerSpan.innerText = '';
+                        if (triggerSpan) {
+                            triggerSpan.innerText = '';
+                            triggerSpan.removeAttribute('data-i18n');
+                        }
                         wrapper.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
                     });
                 }
@@ -1663,7 +1669,10 @@
                         wrapper.classList.remove('has-value');
                         wrapper.classList.remove('open');
                         const triggerSpan = wrapper.querySelector('.custom-select-trigger span');
-                        if (triggerSpan) triggerSpan.innerText = '';
+                        if (triggerSpan) {
+                            triggerSpan.innerText = '';
+                            triggerSpan.removeAttribute('data-i18n');
+                        }
                         wrapper.querySelectorAll('.custom-option').forEach(opt => opt.classList.remove('selected'));
                     });
                 }
