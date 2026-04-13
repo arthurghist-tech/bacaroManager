@@ -1891,32 +1891,44 @@ function renderGoals() {
         const monthlyTarget = calculateMonthlyTarget(current, target, g.deadline);
         
         const categoryMap = {
-            'Savings': '💰',
-            'Emergency Fund': '🛡️',
-            'Travel': '✈️',
-            'Tech': '💻',
-            'Home': '🏠',
-            'Car': '🚗',
-            'Investment': '📈'
+            'Savings': 'piggy-bank',
+            'Emergency Fund': 'shield',
+            'Travel': 'plane',
+            'Tech': 'laptop',
+            'Home': 'home',
+            'Car': 'car',
+            'Investment': 'trending-up'
         };
-        const icon = categoryMap[g.category] || '✨';
+        const iconName = categoryMap[g.category] || 'sparkles';
+
+        // Priority indicator dots instead of stars
+        const priorityLevel = g.priority || 1;
+        const priorityLabels = { 1: 'Low', 2: 'Medium', 3: 'High' };
+        const priorityLabel = priorityLabels[priorityLevel] || 'Low';
 
         return `
             <div class="card-item goal-card-premium" onclick="openGoalDetails(${g.goal_id})">
-                <button class="card-delete-btn" onclick="event.stopPropagation(); handleDeleteGoal(${g.goal_id}, '${escapeHtml(g.title)}')">×</button>
-                <div class="card-category-icon">${icon}</div>
+                <button class="card-delete-btn" onclick="event.stopPropagation(); handleDeleteGoal(${g.goal_id}, '${escapeHtml(g.title)}')">
+                    <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                </button>
+                <div class="card-category-icon"><i data-lucide="${iconName}"></i></div>
                 <div class="card-status-badge status-${status.label.toLowerCase().replace(' ', '-')}">${status.label}</div>
                 <div class="card-content">
                     <h3 class="card-name">${escapeHtml(g.title)}</h3>
-                    <div class="goal-priority-stars">
-                        ${'★'.repeat(g.priority || 1)}${'☆'.repeat(3 - (g.priority || 1))}
+                    <div class="goal-priority-indicator priority-${priorityLabel.toLowerCase()}">
+                        <span class="priority-dot"></span>
+                        <span class="priority-dot"></span>
+                        <span class="priority-dot"></span>
+                        <span class="priority-text">${priorityLabel}</span>
                     </div>
                     <p class="card-balance">${formatCurrency(current)} / ${formatCurrency(target)}</p>
                     <div class="progress-bar-container">
-                        <div class="progress-bar-fill" style="width: ${percentage}%;"></div>
+                        <div class="progress-bar-fill" style="width: ${percentage}%;">
+                            <span class="progress-bar-label">${percentage.toFixed(0)}%</span>
+                        </div>
                     </div>
                     <div class="goal-meta-info">
-                        ${monthlyTarget > 0 ? `<span>Target: ${formatCurrency(monthlyTarget)}/mo</span>` : ''}
+                        ${monthlyTarget > 0 ? `<span><i data-lucide="calendar" style="width: 12px; height: 12px; vertical-align: -2px; margin-right: 4px;"></i>Target: ${formatCurrency(monthlyTarget)}/mo</span>` : ''}
                     </div>
                     <button class="goal-card-add-funds" onclick="event.stopPropagation(); window.openAddFundsModal(${g.goal_id})" data-i18n="btn_add_funds">
                         <i data-lucide="plus-circle" style="width: 14px; height: 14px;"></i> ${dict('Add Funds')}

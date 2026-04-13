@@ -1893,6 +1893,8 @@ input[type=number] {
 			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
 			overflow: hidden;
 			position: relative;
+			padding: 20px;
+			cursor: pointer;
 		}
 
 		.goal-card-premium:hover {
@@ -1950,18 +1952,82 @@ input[type=number] {
 			text-shadow: 0 0 10px rgba(107, 166, 79, 0.2);
 		}
 
+		/* --- Lucide Category Icon (replaces emoji) --- */
 		.card-category-icon {
-			font-size: 2.2em;
+			width: 44px;
+			height: 44px;
+			border-radius: 14px;
+			background: linear-gradient(135deg, rgba(89, 133, 57, 0.12), rgba(89, 133, 57, 0.04));
+			border: 1px solid rgba(89, 133, 57, 0.1);
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			position: absolute;
 			top: 20px;
 			left: 20px;
-			opacity: 0.9;
+			transition: all 0.3s ease;
 		}
 
+		.card-category-icon svg,
+		.card-category-icon i {
+			width: 22px;
+			height: 22px;
+			color: var(--primary-green);
+			stroke-width: 2px;
+		}
+
+		.goal-card-premium:hover .card-category-icon {
+			background: linear-gradient(135deg, rgba(89, 133, 57, 0.2), rgba(89, 133, 57, 0.08));
+			transform: scale(1.05);
+		}
+
+		body.dark-mode .card-category-icon {
+			background: linear-gradient(135deg, rgba(107, 166, 79, 0.15), rgba(107, 166, 79, 0.05));
+			border-color: rgba(107, 166, 79, 0.15);
+		}
+
+		body.dark-mode .card-category-icon svg,
+		body.dark-mode .card-category-icon i {
+			color: #8cc36a;
+		}
+
+		/* --- Card Delete Button --- */
+		.card-delete-btn {
+			position: absolute;
+			top: 12px;
+			right: -40px;
+			width: 30px;
+			height: 30px;
+			border-radius: 8px;
+			background: rgba(231, 76, 60, 0.08);
+			border: 1px solid rgba(231, 76, 60, 0.15);
+			color: #e74c3c;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.3s ease;
+			z-index: 5;
+			opacity: 0;
+		}
+
+		.goal-card-premium:hover .card-delete-btn {
+			right: 12px;
+			opacity: 1;
+		}
+
+		.card-delete-btn:hover {
+			background: #e74c3c;
+			color: white;
+			border-color: #e74c3c;
+			transform: scale(1.1);
+		}
+
+		/* --- Status Badge --- */
 		.card-status-badge {
 			position: absolute;
-			top: 15px;
-			right: 15px;
+			top: 20px;
+			right: 20px;
 			padding: 4px 10px;
 			border-radius: 20px;
 			font-size: 0.6em;
@@ -1974,10 +2040,78 @@ input[type=number] {
 		.status-overdue { background: #fff1f0; color: #e74c3c; }
 		.status-completed { background: #f0f5ff; color: #2980b9; }
 
-		.goal-priority-stars {
-			color: #f1c40f;
-			font-size: 0.8em;
-			margin-top: 5px;
+		body.dark-mode .status-on-track { background: rgba(39, 174, 96, 0.15); color: #6dd5a0; }
+		body.dark-mode .status-needs-attention { background: rgba(241, 196, 15, 0.15); color: #f7dc6f; }
+		body.dark-mode .status-overdue { background: rgba(231, 76, 60, 0.15); color: #f1948a; }
+		body.dark-mode .status-completed { background: rgba(41, 128, 185, 0.15); color: #85c1e9; }
+
+		/* --- Priority Indicator (replaces star emojis) --- */
+		.goal-priority-indicator {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			margin: 4px 0 8px;
+		}
+
+		.priority-dot {
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			background: rgba(0, 0, 0, 0.1);
+			transition: all 0.3s ease;
+		}
+
+		body.dark-mode .priority-dot {
+			background: rgba(255, 255, 255, 0.12);
+		}
+
+		.priority-text {
+			font-size: 0.68em;
+			font-weight: 700;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			margin-left: 4px;
+			opacity: 0.5;
+		}
+
+		.priority-low .priority-dot:nth-child(1) { background: #95a5a6; box-shadow: 0 0 4px rgba(149, 165, 166, 0.4); }
+		.priority-medium .priority-dot:nth-child(1),
+		.priority-medium .priority-dot:nth-child(2) { background: #f39c12; box-shadow: 0 0 4px rgba(243, 156, 18, 0.4); }
+		.priority-high .priority-dot:nth-child(1),
+		.priority-high .priority-dot:nth-child(2),
+		.priority-high .priority-dot:nth-child(3) { background: #e74c3c; box-shadow: 0 0 4px rgba(231, 76, 60, 0.4); }
+
+		/* --- Progress Bar Base Styles (CRITICAL - was missing) --- */
+		.progress-bar-container {
+			width: 100%;
+			height: 8px;
+			background: rgba(0, 0, 0, 0.06);
+			border-radius: 10px;
+			overflow: hidden;
+			position: relative;
+		}
+
+		body.dark-mode .progress-bar-container {
+			background: rgba(255, 255, 255, 0.08);
+		}
+
+		.progress-bar-fill {
+			height: 100%;
+			border-radius: 10px;
+			background: linear-gradient(90deg, #5b9a3c, #7cc556);
+			transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+			position: relative;
+			min-width: 0;
+		}
+
+		.progress-bar-label {
+			position: absolute;
+			right: 4px;
+			top: 50%;
+			transform: translateY(-50%);
+			font-size: 0;
+			opacity: 0;
+			pointer-events: none;
 		}
 
 		.goal-meta-info {
@@ -1993,7 +2127,6 @@ input[type=number] {
 		body.dark-mode .goal-meta-info {
 			color: #abb2ad;
 		}
-		}
 
 		.goal-stats-grid {
 			display: grid;
@@ -2004,11 +2137,32 @@ input[type=number] {
 
 		.goal-stat-card {
 			background: var(--card-bg);
-			padding: 12px;
-			border-radius: 12px;
+			padding: 18px 12px;
+			border-radius: 16px;
 			border: var(--border-whisper);
 			text-align: center;
-			transition: transform 0.3s ease;
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.goal-stat-card::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			height: 3px;
+			border-radius: 0 0 16px 16px;
+		}
+
+		.goal-stat-card.progress::after { background: linear-gradient(90deg, #5b9a3c, #7cc556); }
+		.goal-stat-card.monthly::after { background: linear-gradient(90deg, #2980b9, #5dade2); }
+		.goal-stat-card.remaining::after { background: linear-gradient(90deg, #e74c3c, #f1948a); }
+
+		.goal-stat-card:hover {
+			transform: translateY(-2px);
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 		}
 
 		.goal-stat-card .stat-label {
@@ -2016,18 +2170,19 @@ input[type=number] {
 			text-transform: uppercase;
 			letter-spacing: 1.2px;
 			color: #999;
-			margin-bottom: 2px;
+			margin-bottom: 4px;
 			font-weight: 700;
 		}
 
 		.goal-stat-card .stat-value {
-			font-size: 1.15em;
+			font-size: 1.3em;
 			font-weight: 800;
 			color: var(--dark-green);
 		}
 
 		.goal-stat-card.progress .stat-value { color: var(--primary-green); }
 		.goal-stat-card.remaining .stat-value { color: #e74c3c; }
+		.goal-stat-card.monthly .stat-value { color: #2980b9; }
 
 		body.dark-mode .goal-stat-card {
 			background: rgba(255, 255, 255, 0.03);
@@ -2038,17 +2193,25 @@ input[type=number] {
 			color: #ffffff;
 		}
 
+		body.dark-mode .goal-stat-card.progress .stat-value { color: #8cc36a; }
+		body.dark-mode .goal-stat-card.remaining .stat-value { color: #f1948a; }
+		body.dark-mode .goal-stat-card.monthly .stat-value { color: #85c1e9; }
+
 		/* Detail View Progress Bar */
 		.goal-detail-progress-section {
 			margin: 0 40px 30px 40px;
 		}
 
 		.progress-bar-container.large {
-			height: 12px;
+			height: 14px;
 			border-radius: 10px;
 			background: rgba(0, 0, 0, 0.05);
 			overflow: hidden;
 			box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+
+		.progress-bar-container.large .progress-bar-fill {
+			box-shadow: 0 2px 8px rgba(89, 133, 57, 0.3);
 		}
 
 		body.dark-mode .progress-bar-container.large {
@@ -2062,7 +2225,7 @@ input[type=number] {
 		}
 
 		.goal-card-premium .progress-bar-fill {
-			background: var(--primary-green);
+			background: linear-gradient(90deg, #5b9a3c, #7cc556);
 			box-shadow: 0 0 10px rgba(89, 133, 57, 0.3);
 		}
 
@@ -2071,10 +2234,10 @@ input[type=number] {
 			bottom: auto !important;
 			left: auto !important;
 			width: 100% !important;
-			margin-top: 60px; /* Leave space for icon and badge at top */
+			margin-top: 50px; /* Space for 44px icon container + gap */
 			display: flex;
 			flex-direction: column;
-			gap: 10px;
+			gap: 4px;
 		}
 
 		.badge-status::before {
