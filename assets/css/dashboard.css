@@ -1192,8 +1192,9 @@
 /* Float labels completely above the baseline to prevent ANY overlap */
 .transaction-modal-card .input-group:focus-within .floating-label,
 .transaction-modal-card .floating-input:not(:placeholder-shown) ~ .floating-label,
+.transaction-modal-card .custom-select-wrapper.has-value ~ .floating-label,
 .transaction-modal-card .input-group.has-value .floating-label { 
-    transform: translateY(-20px) scale(0.75) !important;
+    transform: translateY(-22px) scale(0.75) !important;
     color: var(--primary-green) !important; 
     font-weight: 700;
     opacity: 1;
@@ -1878,29 +1879,75 @@ input[type=number] {
 
 		/* --- Enhanced Goals Styles --- */
 		.goal-card-premium {
-			background: rgba(255, 255, 255, 0.7) !important;
-			backdrop-filter: blur(10px);
-			border: 1px solid rgba(255, 255, 255, 0.3);
+			background: rgba(255, 255, 255, 0.5) !important;
+			backdrop-filter: blur(16px) saturate(180%);
+			-webkit-backdrop-filter: blur(16px) saturate(180%);
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			border-radius: 24px;
 			color: var(--dark-green) !important;
-			transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
-			aspect-ratio: auto !important; /* Allow it to grow vertically */
-			min-height: 200px;
+			transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+			aspect-ratio: auto !important;
+			min-height: 220px;
 			display: flex;
 			flex-direction: column;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+			overflow: hidden;
+			position: relative;
+		}
+
+		.goal-card-premium:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+			border-color: rgba(89, 133, 57, 0.3);
+		}
+
+		body.dark-mode .goal-card-premium {
+			background: rgba(22, 28, 24, 0.75) !important;
+			backdrop-filter: blur(20px) saturate(150%);
+			border: 1px solid rgba(255, 255, 255, 0.08);
+			box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+			color: #edf1ee !important;
+		}
+
+		body.dark-mode .goal-card-premium:hover {
+			border-color: rgba(107, 166, 79, 0.4);
+			box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
 		}
 
 		.goal-card-premium::before {
-			background: linear-gradient(135deg, rgba(89, 133, 57, 0.1), transparent);
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background: linear-gradient(135deg, rgba(89, 133, 57, 0.05), transparent 60%);
+			pointer-events: none;
 		}
 
 		.goal-card-premium .card-name {
 			color: var(--dark-green);
-			text-shadow: none;
+			font-size: 1.25em;
+			font-weight: 750;
+			letter-spacing: -0.3px;
+			margin-bottom: 4px;
+		}
+
+		body.dark-mode .goal-card-premium .card-name {
+			color: #ffffff;
+			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 		}
 
 		.goal-card-premium .card-balance {
 			color: var(--primary-green);
-			font-weight: 700;
+			font-size: 1.1em;
+			font-weight: 800;
+			margin-bottom: 12px;
+		}
+		
+		body.dark-mode .goal-card-premium .card-balance {
+			color: #8cc36a;
+			text-shadow: 0 0 10px rgba(107, 166, 79, 0.2);
 		}
 
 		.card-category-icon {
@@ -1934,10 +1981,18 @@ input[type=number] {
 		}
 
 		.goal-meta-info {
-			margin-top: 10px;
-			font-size: 0.75em;
-			font-weight: 600;
-			color: #888;
+			margin-top: 12px;
+			font-size: 0.78em;
+			font-weight: 700;
+			color: #666;
+			display: flex;
+			flex-direction: column;
+			gap: 4px;
+		}
+		
+		body.dark-mode .goal-meta-info {
+			color: #abb2ad;
+		}
 		}
 
 		.goal-stats-grid {

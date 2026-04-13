@@ -192,6 +192,31 @@
 			});
 		}
 
+		function resetAddFundsForm() {
+			const form = document.getElementById('add-funds-form');
+			if (!form) return;
+			form.reset();
+			
+			// Clear messages
+			const messageDiv = document.getElementById('add-funds-message');
+			if (messageDiv) {
+				messageDiv.innerHTML = '';
+				messageDiv.className = 'message';
+			}
+
+			// Reset Input Groups
+			form.querySelectorAll('.input-group').forEach(group => {
+				group.classList.remove('has-value');
+			});
+			
+			// Refresh custom selects inside the form
+			form.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+				wrapper.classList.remove('has-value');
+				const trigger = wrapper.querySelector('.custom-select-trigger span');
+				if (trigger) trigger.innerText = '';
+			});
+		}
+
 		function validateGoalDeadline() {
 			const deadlineInput = document.getElementById('goal-deadline');
 			const messageDiv = document.getElementById('add-goal-message');
@@ -2660,6 +2685,9 @@ function initializeCustomSelects() {
 		// Insert the wrapper as a sibling of the select and label
 		select.parentNode.insertBefore(wrapper, select);
 		wrapper.appendChild(select);
+		
+		// If there's a label following the select, it's now a sibling of the wrapper.
+		// We'll manage its state via the parent input-group.
 		select.style.display = 'none';
 		const isSettings = select.classList.contains('settings-select');
 		const isTx = select.classList.contains('tx-filter-select');
