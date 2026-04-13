@@ -260,16 +260,6 @@ async function handleSendMessage() {
     const bubble = targetMsg.querySelector('.stream-target');
     let accumulatedText = "";
     
-    // Prepend goal context to the message for the AI to be "aware" of current goals
-    let enrichedMessage = message;
-    if (window.goals && window.goals.length > 0) {
-        const goalSummary = window.goals.map(g => {
-            const progress = ((g.current_amount / g.target_amount) * 100).toFixed(1);
-            return `- ${g.title}: ${progress}% complete (Target: ${g.target_amount}, Priority: ${g.priority})`;
-        }).join('\n');
-        enrichedMessage = `[CONTEXT: Goal Summary]\n${goalSummary}\n\n[USER MESSAGE]\n${message}`;
-    }
-
     try {
         const res = await fetch('/api/chat', {
             method: 'POST',
@@ -277,7 +267,7 @@ async function handleSendMessage() {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${getToken()}`
             },
-            body: JSON.stringify({ message: enrichedMessage })
+            body: JSON.stringify({ message })
         });
         
         if (!res.ok) throw new Error("API Error");

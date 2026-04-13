@@ -139,6 +139,31 @@ export default async function handler(req, res) {
         console.error('Chat API: ERROR fetching wallets:', e.message);
       }
 
+      // Fetch user's savings goals for context
+      let goalsText = "No savings goals found.";
+      try {
+        const goals = await sql`
+          SELECT title, target_amount, current_amount, deadline, category, priority
+          FROM goals
+          WHERE account_id = ${acc_id}
+          ORDER BY created_at DESC
+        `;
+        console.log('Chat API: Found', goals.length, 'goals');
+        if (goals.length > 0) {
+          goalsText = JSON.stringify(goals.map(g => ({
+            title: g.title,
+            target: g.target_amount,
+            saved: g.current_amount,
+            progress: g.target_amount > 0 ? ((g.current_amount / g.target_amount) * 100).toFixed(1) + '%' : '0%',
+            deadline: g.deadline,
+            category: g.category,
+            priority: g.priority
+          })));
+        }
+      } catch(e) {
+        console.error('Chat API: ERROR fetching goals:', e.message);
+      }
+
       // System Prompt
       const systemPrompt = {
         role: 'system',
@@ -160,7 +185,11 @@ IMPORTANT INSTRUCTION FOR UI VISUALS:
 If the user explicitly asks for a visual summary, graph, chart, or visual breakdown:
 - If they ask about Income, output exactly "[CHART:INCOME]" at the very end of your response.
 - If they ask about Expenses, output exactly "[CHART:EXPENSE]" at the very end of your response.
-- If they ask for a general summary without specifying, default to outputting "[CHART:EXPENSE]".`
+- If they ask for a general summary without specifying, default to outputting "[CHART:EXPENSE]".
+
+Here is the user's SAVINGS GOALS data:
+${goalsText}
+When asked about goals, provide advice on progress, monthly savings needed, and priority management.`
       };
 
       // Fetch MINIMAL history for conversational continuity only
